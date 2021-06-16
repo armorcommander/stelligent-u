@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
 
 # ===========================================================================================================
+# Author: John Hunter    Initial creation: 14Jun2021
+# 
 # Description:
-#     This script swaps the aws profile ENV variables to a new one
+#     This takes an input MFA token and gets a temporary session token that is used to create
+#     temporary credentials for programatically accessing AWS for a limited duration
+# 
 # Arguments:
-#     The valid profile name in the aws config file to swap to
+#     A valid MFA token
 #
-# NOTE: You MUST source this script in order to change the env variables in the current shell
-#       example from command prompt -->  $ . swapAwsProfile.sh <newProfile>
-#
-#       If not done, the script is run in its own, new shell and so the export will only occur
-#       there and not in the current shell.
 # ===========================================================================================================
 
 # setting some color varibles for use
