@@ -1,0 +1,14 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: My S3 stack with bucketname
+
+Parameters:
+  jhS3BucketName:
+    Type: String
+
+Resources:
+  s3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join ["-", [!Ref AWS::AccountId, !Ref jhS3BucketName]]

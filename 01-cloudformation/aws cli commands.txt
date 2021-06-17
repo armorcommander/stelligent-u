@@ -10,3 +10,13 @@ aws cloudformation create-stack --stack-name jhs3stack112 --template-body file: 
 Delete stack 
 =========================================
 aws cloudformation delete-stack --stack-name jhs3stack112
+
+Update a stack 
+=========================================
+aws cloudformation update-stack --stack-name jhs3stack --template-body file: //lab113-s3-pseudo-parameters.yaml --parameters file://s3-params.json
+
+To deploy to another region 
+=========================================
+use the --region command
+
+aws --region us-east-2 cloudformation create-stack --stack-name jhs3stack --template-body file: //lab114-s3-conditions.yaml --parameters file://s3-params.json
