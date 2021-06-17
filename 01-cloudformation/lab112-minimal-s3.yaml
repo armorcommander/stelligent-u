@@ -1,11 +1,15 @@
 ---
 AWSTemplateFormatVersion: "2010-09-09"
 
-Description:
-  The most minimal S3 stack possible
+Description: My S3 stack with bucketname
+
+Parameters:
+  jhS3BucketName:
+    Type: String
 
 Resources:
   s3Bucket:
     Type: AWS::S3::Bucket
-    Properties: 
-      BucketName: jh-bucket
+    Properties:
+      BucketName:
+        Ref: jhS3BucketName

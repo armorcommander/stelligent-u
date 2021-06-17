@@ -1,0 +1,12 @@
+Create stack 
+------------------------------
+-- minimal template file
+aws cloudformation create-stack --stack-name jhs3stack112 --template-body file: //lab111-minimal-s3.yaml
+
+-- passing parameters via a file 
+aws cloudformation create-stack --stack-name jhs3stack112 --template-body file: //lab112-minimal-s3.yaml --parameters file://s3-params.json
+
+
+Delete stack 
+=========================================
+aws cloudformation delete-stack --stack-name jhs3stack112
