@@ -1,0 +1,28 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: IAM role and Managed Policy for a user. Policy is to allow only access to READ actions
+
+Parameters:
+  JhUserName:
+    Type: String
+
+Resources:
+  JhUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: !Join ["-", [!Ref AWS::Region, !Ref JhUserName]]
+  JhS3ReadOnlyPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: JhS3ReadOnlyPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:Get*
+              - s3:List*
+            Resource: "*"
+      Users:
+        - !Ref JhUser
