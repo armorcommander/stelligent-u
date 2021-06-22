@@ -200,7 +200,12 @@ S3 Buckets (including listing buckets and downloading individual bucket contents
 > inline policies which is not what I wanted (especially since they don't have their own
 > ARNs). After some doign some googling and reading further in the AWS docs, I realized that
 > I needed to use 'AWS::IAM::ManagedPolicy' instead to create the right type of policy. Once
-> I did that, things worked as expected.
+> I did that, things worked as expected. The cli that I used:
+
+<br>
+```
+aws cloudformation create-stack --stack-name jh4stack --template-body file://lab121c-cross-reference-managed.yaml --parameters file://params.json --capabilities CAPABILITY_NAMED_IAM
+```
 
 #### Lab 1.2.2: Exposing Resource Details via Exports
 
@@ -211,6 +216,19 @@ Policy's Amazon Resource Name ([ARN](https://docs.aws.amazon.com/general/latest/
 * [List all the Stack Exports](https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-exports.html)
 in that Stack's region.
 
+> Again, this took longer than expected since the cloudformation syntax is still new to me and
+> a little strange from what I am used to - but it is getting clearer and I'm getting faster.
+> It took me a bit to get the exports working since I inadvertently thought that the '*Export*'
+> notation took two parts, a name and a value and then I realized that the presence of the
+> '*Export*' label was what triggered aws to export the output value and that the '*Export*' name
+> was simply the name of the output value when exported. Seems simple now but it was really
+> confusing at first. The cli that I used:
+
+<br>
+```
+aws cloudformation create-stack --stack-name jh5stack --template-body file://lab122-exposing-exports.yaml --parameters file://params.json --capabilities CAPABILITY_NAMED_IAM
+```
+<br>
 #### Lab 1.2.3: Importing another Stack's Exports
 
 Create a *new* CFN template that describes an IAM User and applies to it
@@ -220,11 +238,37 @@ the Managed Policy ARN created by and exported from the previous Stack.
 * [List all the Stack Imports](https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-imports.html)
 in that stack's region.
 
+> I read this *too fast* and *assumed* that it meant to create the new user
+> in another region. But, as I learned, you can't import exported values
+> cross-region, only in the same region. So I guess this was a good learning
+> point for me. Once I realized my mistake, this went fast.
+> The cli that I used:
+
+<br>
+```
+aws cloudformation create-stack --stack-name jh6stack --template-body file://lab123-using-imports.yaml --parameters file://params-2.json --capabilities CAPABILITY_NAMED_IAM
+```
+
 #### Lab 1.2.4: Import/Export Dependencies
 
 Delete your CFN stacks in the same order you created them in. Did you
 succeed? If not, describe how you would *identify* the problem, and
 resolve it yourself.
+<br>
+> Deleting stacks in the same order that you created them will not work if
+> later created stacks reference earlier created stacks.  They will not
+> successfully delete since there are dependencies on their resources. In order
+> to successfully delete them, you must do the deletion in reverse order, starting
+> with the most recently created and then deleting in reverse chronological order.
+> 
+> When doing anything with the aws cli, it is always best to use commands to verify
+> that your command successfully executed. In this case, I would use the
+> 'aws cloudformation describe-events --stack-name \<stack>' with the expectation
+> that it would come back with an error stating that the stack does not exist. If it
+> comes back with anything else, it will list in the events what the issue was that
+> prevented the deletion command from succeeding, specifically that the stack could
+> not be deleted because of dependency issues. Knowing the issue that prevented the
+> command from succeeding enables you to fix the issue so that it can succeed.
 
 ### Retrospective 1.2
 
@@ -232,6 +276,15 @@ resolve it yourself.
 
 Show how to use the IAM policy tester to demonstrate that the user
 cannot perform 'Put' actions on any S3 buckets.
+<br>
+> Using the aws IAM Policy Tester is very simple. You simply select the
+> policy that you want to test, select the resources and then select the
+> actions that you want to run against it.  You will the action results
+> and they should be exactly what you expect.  If any of the action results
+> are not what you expect, such as the IAM user can read or can delete, or
+> whatever, and the policy should not allow it, then you modify the policy
+> and then follow the process again until the policy does exactly as you
+> are expecting.
 
 #### Task: SSM Parameter Store
 
@@ -240,6 +293,14 @@ parameter in the same region as the first Stack, and provide a value for
 that parameter. Modify the first Stack's template so that it utilizes
 this Parameter Store parameter value as the IAM User's name. Update the
 first stack. Finally, tear it down.
+<br>
+> This one was pretty straight forward and worked right off. :)
+> The cli that I used:
+
+<br>
+```
+aws cloudformation create-stack --stack-name jhstack-7 --template-body file://lab124-using-ssm.yaml --parameters file://params-ssm.json --capabilities CAPABILITY_NAMED_IAM
+```
 
 ## Lesson 1.3: Portability & Staying DRY
 
