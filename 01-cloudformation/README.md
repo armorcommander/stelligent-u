@@ -195,6 +195,13 @@ S3 Buckets (including listing buckets and downloading individual bucket contents
 * Use a CFN Parameter to set the user's name
 * Create the Stack.
 
+> This was a bit confusing to me at first since I didn't realize that there were specific
+> AWS Types for different policies. At first, I was using 'AWS::IAM::Policy' which creates
+> inline policies which is not what I wanted (especially since they don't have their own
+> ARNs). After some doign some googling and reading further in the AWS docs, I realized that
+> I needed to use 'AWS::IAM::ManagedPolicy' instead to create the right type of policy. Once
+> I did that, things worked as expected.
+
 #### Lab 1.2.2: Exposing Resource Details via Exports
 
 Update the template by adding a CFN Output that exports the Managed

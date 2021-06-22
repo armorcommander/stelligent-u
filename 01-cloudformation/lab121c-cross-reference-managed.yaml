@@ -12,10 +12,12 @@ Resources:
     Type: AWS::IAM::User
     Properties:
       UserName: !Join ["-", [!Ref AWS::Region, !Ref JhUserName]]
+
   JhS3ReadOnlyPolicy:
-    Type: AWS::IAM::Policy
+    Type: AWS::IAM::ManagedPolicy
     Properties:
-      PolicyName: JhS3ReadOnlyPolicy
+      Description: This policy allows READONLY access to S3 buckets
+      ManagedPolicyName: JhS3ReadOnlyManagedPolicy
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
