@@ -24,6 +24,10 @@
 #     o Read the countries into an array from the regions_config yaml file and use that for the country
 #       validation check instead of having it hard coded
 # 
+# Notes:
+#     - I had to hard code the path to 'yq' since there is this one, for bash and I have another installed
+#       for python. What a pain.
+# 
 # ===========================================================================================================
 
 # setting some color varibles for use
@@ -87,22 +91,27 @@ IFS=',' read -r -a regionsArray <<< ${trimmedRegions}
 arrayLen=${#regionsArray[@]}
 
 # displaying pre-execution info
- printf "%s\n\n" "        ${BRIGHT_WHITE}Input country \"${PURPLE}$inputCountry${BRIGHT_WHITE}\" has ${CYAN}$arrayLen${BRIGHT_WHITE} regions where an S3 bucket will be created.${BRIGHT_WHITE}"
- printf "\n%s\n\n" "${GREEN}Step 2. ${BRIGHT_WHITE}Creating S3 bucket in each region"
+printf "%s\n\n" "        ${BRIGHT_WHITE}Input country \"${PURPLE}$inputCountry${BRIGHT_WHITE}\" has ${CYAN}$arrayLen${BRIGHT_WHITE} regions where an S3 bucket will be created.${BRIGHT_WHITE}"
+printf "\n%s\n\n" "${GREEN}Step 2. ${BRIGHT_WHITE}Creating S3 bucket in each region"
+
+exit 1
 
 # looping through the regions and creating an s3 bucket in each
 for region in "${regionsArray[@]}"
 do
     stackName="jhS3stack-"$region
     printf "%s" "        ${BRIGHT_WHITE}Attempting to create S3 bucket in region: ${CYAN}$region${BRIGHT_WHITE} ..."
+    # creating the stack
     rawStackId=$(aws --region $region cloudformation create-stack --stack-name $stackName --template-body file://lab131-s3.yaml --capabilities CAPABILITY_NAMED_IAM | tee "$logFile")
     stackId=$(echo $rawStackId | tr -d '{}\n"' | cut -d ' ' -f3)
+    # validating that the stack was created successfuly and can be used
     aws --region $region cloudformation wait stack-create-complete --stack-name $stackId
     if [[ $?==0 ]]; then
-        printf "%s\n" "  ${Yellow}Success!  ${BRIGHT_WHITE}S3 bucket created.${BRIGHT_WHITE}"
+        # success messages
+        printf "%s\n" "  ${GREEN}Success!  ${BRIGHT_WHITE}S3 bucket created.${BRIGHT_WHITE}"
         printf "%s\n\n" "        ${YELLOW}StackId: ${BRIGHT_WHITE}$stackId${BRIGHT_WHITE}"
     else
-        # printf "%s\n" "  ${RED}Failure!  ${BRIGHT_WHITE}S3 bucket not created.${BRIGHT_WHITE}"
+        # error messages
         printf "\n\n%s\n\n" "${BRIGHT_WHITE}$doubleDiv${BRIGHT_WHITE}"
         printf "%s\n\n" "  ${RED}ERROR  ${BRIGHT_WHITE}Stack ${BRIGHT_YELLOW}$stackName${BRIGHT_WHITE} failed creation in region ${CYAN}$region${BRIGHT_WHITE}. S3 bucket not created. ${RED}Exiting.${BRIGHT_WHITE}"
         printf "%s\n\n" "  ${DIRTY_WHITE}For more details, view the logfile: $logFile${BRIGHT_WHITE}"
@@ -115,7 +124,7 @@ done
 rm $logFile
 
 # displaying overall success and run time message
-printf "\n\n%s\n\n" "${WHITE}${doubleDiv}"
+printf "\n%s\n\n" "${WHITE}${doubleDiv}"
 min=0
 sec=$SECONDS
 if [ "$SECONDS" -gt "60" ] ; then

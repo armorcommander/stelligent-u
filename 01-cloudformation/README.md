@@ -338,6 +338,8 @@ deployment region parameters. Consider using `jq` or `yq` to parse this file.
 where the "*friendly-name*" value is parameterized in the CFN template
 but has a default value.
 
+> Wrote a bash script: createS3BucketByRegion.sh
+
 #### Lab 1.3.2: Coding with AWS SDKs
 
 Repeat the exercise in the previous lab, with two modifications:

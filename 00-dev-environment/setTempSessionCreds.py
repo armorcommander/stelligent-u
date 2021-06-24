@@ -17,16 +17,22 @@
 #  - Add '-q, --quiet' option that would silence the verbose output
 
 
-import argparse, boto3, configparser, os, sys
+import argparse
+import configparser
+import os
+import sys
+
+import boto3
 
 # appending the path so that packages can be imported from a parent level
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-from  utils.pyColors import MinStyle
+from utils.pyColors import MinStyle  # isort:skip
+
 
 # create the commandline parser
-my_parser=argparse.ArgumentParser(prog='setTempSessionCreds',
-                                  usage='%(prog)s [-h] mfa_token',
-                                  description='Use your MFA Token to create temporary credentials using a session token')
+my_parser = argparse.ArgumentParser(prog='setTempSessionCreds',
+                                    usage='%(prog)s [-h] mfa_token',
+                                    description='Use your MFA Token to create temporary credentials using a session token')
 
 # adding cli arguments
 my_parser.add_argument('MFA_Token',
@@ -35,19 +41,19 @@ my_parser.add_argument('MFA_Token',
                        help='The MFA token used to obtain the temporary session token')
 
 # execute the parse_args() method
-args=my_parser.parse_args()
+args = my_parser.parse_args()
 
 # assigning the input token
-mfa_token=args.MFA_Token
+mfa_token = args.MFA_Token
 
-config=configparser.ConfigParser()
+config = configparser.ConfigParser()
 
 # setting initial variables
-st_profile='st_jh_labs'
-mfa_creds_profile='st_mfa_creds'
-mfa_token=sys.argv[1]
-MODFILE='/Users/John.Hunter/.aws/credentials'
-mfa_arn='arn:aws:iam::324320755747:mfa/john.hunter.labs'
+st_profile = 'st_jh_labs'
+mfa_creds_profile = 'st_mfa_creds'
+mfa_token = sys.argv[1]
+MODFILE = '/Users/John.Hunter/.aws/credentials'
+mfa_arn = 'arn:aws:iam::324320755747:mfa/john.hunter.labs'
 
 # display the input mfa_token
 print(f'\nMFA Token: {mfa_token}\n')
@@ -66,15 +72,16 @@ print()
 
 
 # get and display the temporary credentials obtained using the mfa token
-dur_seconds=43200 # 12 hour duration
+dur_seconds = 43200  # 12 hour duration
 session_token_response = st_profile_sts_client.get_session_token(
     DurationSeconds=(dur_seconds),
     SerialNumber=(mfa_arn),
     TokenCode=(mfa_token)
 )
-access_key_id=session_token_response.get("Credentials").get("AccessKeyId")
-secret_access_key=session_token_response.get("Credentials").get("SecretAccessKey")
-session_token=session_token_response.get("Credentials").get("SessionToken")
+access_key_id = session_token_response.get("Credentials").get("AccessKeyId")
+secret_access_key = session_token_response.get(
+    "Credentials").get("SecretAccessKey")
+session_token = session_token_response.get("Credentials").get("SessionToken")
 
 # get and display the profile that is about to be modified
 config.read(f'{MODFILE}')
@@ -87,9 +94,10 @@ print(f'{MinStyle.LIGHTCYAN}SessionToken: {MinStyle.YELLOW}{config.get(f"{mfa_cr
 
 # set the new values of the to be modified profile and then write them out
 config.set(f'{mfa_creds_profile}', 'aws_access_key_id', f'{access_key_id}')
-config.set(f'{mfa_creds_profile}', 'aws_secret_access_key', f'{secret_access_key}')
+config.set(f'{mfa_creds_profile}',
+           'aws_secret_access_key', f'{secret_access_key}')
 config.set(f'{mfa_creds_profile}', 'aws_session_token', f'{session_token}')
-with open ((MODFILE), 'w') as configfile:
+with open((MODFILE), 'w') as configfile:
     config.write(configfile)
 
 # display the new values of the now modified profile
@@ -110,7 +118,7 @@ print()
 # get and display the users identity using the new profile to validate that the temp credentials work
 iam_session = boto3.Session(profile_name=(mfa_creds_profile))
 iam_client = iam_session.client('iam')
-get_user_response=iam_client.get_user()
+get_user_response = iam_client.get_user()
 
 print(f'{MinStyle.PINK}IAM get-user Response using tmp session credentials{MinStyle.RESET}')
 print(f'{MinStyle.LIGHTGREY}{MinStyle.DIV_SINGLE_SHORT}{MinStyle.RESET}')
