@@ -3,10 +3,9 @@
 import argparse
 import boto3
 import botocore.exceptions
-import yaml
+import yaml, cfnyaml, json
 import os
 import sys
-
 
 # appending the path so that packages can be imported from a parent level
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
@@ -65,6 +64,7 @@ def errMessage(err, attemptedAction):
     err_http_status_code=err.response['ResponseMetadata']['HTTPStatusCode']
     if err_msg == 'No updates are to be performed.':
         print("No changes made")
+        return None
     else:
         print(f'\n{MinStyle.LIGHTRED}Encountered Unexpected error:{MinStyle.RESET}')
         print(f'{MinStyle.LIGHTCYAN}Attempted Action:{MinStyle.RESET} {attemptedAction}')
@@ -81,8 +81,8 @@ def errMessage(err, attemptedAction):
 
 def createStack(userAwsProfile, region, fullStackName, stackTemplate):
     action='AWS CLOUDFORMATION - CreateStack'
-    s3_session = boto3.Session(profile_name=(userAwsProfile))
-    s3_client = s3_session.client('cloudformation', region_name=(region))
+    cf_session = boto3.Session(profile_name=(userAwsProfile))
+    cf_client = cf_session.client('cloudformation', region_name=(region))
 
     if args.verbose:
         print(f'\n{MinStyle.WHITE}Stack creation parameters{MinStyle.RESET}')
@@ -94,61 +94,66 @@ def createStack(userAwsProfile, region, fullStackName, stackTemplate):
 
     print(f'Attempting to create S3 bucket in region: {region}')
     try:
-        s3_client_response = s3_client.create_stack(
-            StackName=f'{full_stack_name}',
-            TemplateBody=f'{stack_template}',
+        return cf_client.create_stack(
+            StackName=f'{fullStackName}',
+            TemplateBody=(stackTemplate),
             DisableRollback=True,
             TimeoutInMinutes=3,
             Capabilities=['CAPABILITY_NAMED_IAM']
         )
-    except s3_client.exceptions.LimitExceededException as err:
-        errMessage(err, action)
-    except s3_client.exceptions.AlreadyExistsException as err:
-        errMessage(err, action)
-    except s3_client.exceptions.TokenAlreadyExistsException as err:
-        errMessage(err, action)
-    except s3_client.exceptions.InsufficientCapabilitiesException as err:
-        errMessage(err, action)
     except botocore.exceptions.ClientError as err:
-        errMessage(err, action)
-    else:
-        return s3_client_response
+        return errMessage(err, action)
 
 
 def updateStack(userAwsProfile, region, fullStackName, stackTemplate):
     action='AWS CLOUDFORMATION - UpdateStack'
-    s3_session = boto3.Session(profile_name=(userAwsProfile))
-    s3_client = s3_session.client('cloudformation', region_name=(region))
+    cf_client = boto3.Session(profile_name=(userAwsProfile))
+    cf_client = cf_client.client('cloudformation', region_name=(region))
 
     if args.verbose:
-        print(f'\n{MinStyle.WHITE}Stack creation parameters{MinStyle.RESET}')
+        print(f'\n{MinStyle.WHITE}Stack update parameters{MinStyle.RESET}')
         print(f'{MinStyle.DIV_SINGLE_MEDIUM}{MinStyle.RESET}')
         print(f'{MinStyle.PINK}Stack Name ... = {MinStyle.LIGHTCYAN}{fullStackName}{MinStyle.RESET}')
         print(f'{MinStyle.PINK}Stack Template = {MinStyle.LIGHTCYAN}{stackTemplate}{MinStyle.RESET}')
         print(f'{MinStyle.PINK}Region ....... = {MinStyle.LIGHTCYAN}{region}{MinStyle.RESET}')
         print()
 
-    print(f'Attempting to create S3 bucket in region: {region}')
+    print(f'Attempting to update S3 bucket in region: {region}')
     try:
-        s3_client_response = s3_client.update_stack(
-            StackName=f'{full_stack_name}',
-            TemplateBody=f'{stack_template}',
+        return cf_client.update_stack(
+            StackName=f'{fullStackName}',
+            TemplateBody=f'{stackTemplate}',
             DisableRollback=True,
             TimeoutInMinutes=3,
             Capabilities=['CAPABILITY_NAMED_IAM']
         )
-    except s3_client.exceptions.LimitExceededException as err:
-        errMessage(err, action)
-    except s3_client.exceptions.AlreadyExistsException as err:
-        errMessage(err, action)
-    except s3_client.exceptions.TokenAlreadyExistsException as err:
-        errMessage(err, action)
-    except s3_client.exceptions.InsufficientCapabilitiesException as err:
-        errMessage(err, action)
     except botocore.exceptions.ClientError as err:
-        errMessage(err, action)
-    else:
-        return s3_client_response
+        return errMessage(err, action)
+
+def deleteStack(userAwsProfile, region, fullStackName, stackTemplate):
+    action='AWS CLOUDFORMATION - DeleteStack'
+    cf_client = boto3.Session(profile_name=(userAwsProfile))
+    cf_client = cf_client.client('cloudformation', region_name=(region))
+
+    if args.verbose:
+        print(f'\n{MinStyle.WHITE}Stack deletion parameters{MinStyle.RESET}')
+        print(f'{MinStyle.DIV_SINGLE_MEDIUM}{MinStyle.RESET}')
+        print(f'{MinStyle.PINK}Stack Name ... = {MinStyle.LIGHTCYAN}{fullStackName}{MinStyle.RESET}')
+        print(f'{MinStyle.PINK}Stack Template = {MinStyle.LIGHTCYAN}{stackTemplate}{MinStyle.RESET}')
+        print(f'{MinStyle.PINK}Region ....... = {MinStyle.LIGHTCYAN}{region}{MinStyle.RESET}')
+        print()
+
+    print(f'Attempting to delete S3 bucket in region: {region}')
+    try:
+        return cf_client.delete_stack(
+            StackName=f'{fullStackName}',
+            TemplateBody=f'{stackTemplate}',
+            DisableRollback=True,
+            TimeoutInMinutes=3,
+            Capabilities=['CAPABILITY_NAMED_IAM']
+        )
+    except botocore.exceptions.ClientError as err:
+        return errMessage(err, action)
 
 # execute the parse_args() method
 args = my_parser.parse_args()
@@ -157,8 +162,8 @@ args = my_parser.parse_args()
 s3_stack_action = args.stack_action
 country = args.country
 stack_name = args.stack_name
-regions_file = args.regions_file
-stack_template = args.stack_template
+raw_regions_file = args.regions_file
+raw_stack_template = args.stack_template
 user_aws_profile = args.user_aws_profile
 
 if args.verbose:
@@ -167,28 +172,51 @@ if args.verbose:
     print(f'{MinStyle.PINK}s3_stack_action : {MinStyle.LIGHTCYAN}{s3_stack_action}{MinStyle.RESET}')
     print(f'{MinStyle.PINK}country ....... : {MinStyle.LIGHTCYAN}{country}{MinStyle.RESET}')
     print(f'{MinStyle.PINK}stack_name .... : {MinStyle.LIGHTCYAN}{stack_name}{MinStyle.RESET}')
-    print(f'{MinStyle.PINK}regions_file .. : {MinStyle.LIGHTCYAN}{regions_file}{MinStyle.RESET}')
-    print(f'{MinStyle.PINK}stack_template. : {MinStyle.LIGHTCYAN}{stack_template}{MinStyle.RESET}')
+    print(f'{MinStyle.PINK}raw_regions_file .. : {MinStyle.LIGHTCYAN}{raw_regions_file}{MinStyle.RESET}')
+    print(f'{MinStyle.PINK}raw_stack_template. : {MinStyle.LIGHTCYAN}{raw_stack_template}{MinStyle.RESET}')
     print(f'{MinStyle.PINK}user_aws_profile: {MinStyle.LIGHTCYAN}{user_aws_profile}{MinStyle.RESET}\n')
 
-all_regions = yaml.safe_load(regions_file)
+all_regions = yaml.safe_load(raw_regions_file)
 country_regions = all_regions[(country)]
+stack_ids = []
+stack_template = ''
+if s3_stack_action == 'delete':
+    raw_stack_ids = json.load(raw_stack_template)
+    stack_ids = raw_stack_ids
+else:
+    stack_temp = cfnyaml.load(raw_stack_template)
+    # stack_temp = cfnyaml.load(open('lab131-s3.yaml'))
+    stack_template = cfnyaml.dump(stack_temp)
+
 
 if args.verbose:
     print(f'\n{MinStyle.WHITE}Regions in Country{MinStyle.RESET}')
     print(f'{MinStyle.DIV_SINGLE_MEDIUM}{MinStyle.RESET}')
     print(f'{MinStyle.PINK}country_regions= {MinStyle.LIGHTCYAN}{country_regions}{MinStyle.RESET}\n')
 
+if (args.verbose and s3_stack_action == 'create'):
+    print(f'\n{MinStyle.WHITE}Stack Template{MinStyle.RESET}')
+    print(f'{MinStyle.DIV_SINGLE_MEDIUM}{MinStyle.RESET}')
+    print(f'{MinStyle.PINK}stack_template= {MinStyle.LIGHTCYAN}{stack_template}{MinStyle.RESET}\n')
 
-    # TODO
-    # - create stack
-    # - wait for stack completion
-    # - print success/failure message
+if (args.verbose and s3_stack_action == 'delete'):
+    print(f'\n{MinStyle.WHITE}Stack Ids{MinStyle.RESET}')
+    print(f'{MinStyle.DIV_SINGLE_MEDIUM}{MinStyle.RESET}')
+    print(f'{MinStyle.PINK}stack_ids= {MinStyle.LIGHTCYAN}{stack_ids}{MinStyle.RESET}\n')
+
+
+# TODO
+# - create stack
+# - wait for stack completion
+# - print success/failure message
 for region in country_regions:
     full_stack_name=f'{stack_name}-{region}'
     if s3_stack_action == 'create':
         response = createStack(user_aws_profile, region, full_stack_name, stack_template)
         print(f'{full_stack_name}\'s StackId= {response["StackId"]}\n')
     elif s3_stack_action == 'update':
-        response = createStack(user_aws_profile, region, full_stack_name, stack_template)
+        response = updateStack(user_aws_profile, region, full_stack_name, stack_template)
         print(f'{full_stack_name}\'s StackId= {response["StackId"]}\n')
+    elif s3_stack_action == 'delete':
+        response = deleteStack(user_aws_profile, region, full_stack_name, stack_template)
+        # print(f'{full_stack_name}\'s StackId= {response["StackId"]}\n')
