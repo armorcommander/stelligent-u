@@ -139,15 +139,15 @@ deleted to ensure their removal.
 *Why do we prefer the YAML format for CFN templates?*
 
 > It is cleaner and easier to read for a human.  JSON comes with all of the extra
-> baggage needed to desecribe an object using quotes, curly braces, etc.
+> baggage needed to describe an object using quotes, curly braces, etc.
 
 #### Question: Protecting Resources
 
 *What else can you do to prevent resources in a stack from being deleted?*
 <br>
 > There are four approaches to prevent a stack from being deleted.
-> 
-> 
+>
+>
 > 1. You can set the DeletionPolicy attributed on ALL of the resources within the stack.
 > 2. You can modify the IAM permissions so that the the user does not have the ability to delete a stack.
 > 3. The stack has an overall policy that can be set to prevent deletion
@@ -168,7 +168,7 @@ Demonstrate 2 ways to code string combination/substitution using
 built-in CFN functions.
 
 > 1. Using a Condition, you can test using the supported conditions (And, Equals, If, Not, Or) and, depending on the result, use the IF function with JOIN to combine or with simply the string by itself
-> 2. Using a Condition, use the Substitute function SUB to select a value to combine or substitue.
+> 2. Using a Condition, use the Substitute function SUB to select a value to combine or substitute.
 
 ## Lesson 1.2: Integration with Other AWS Resources
 
@@ -198,7 +198,7 @@ S3 Buckets (including listing buckets and downloading individual bucket contents
 > This was a bit confusing to me at first since I didn't realize that there were specific
 > AWS Types for different policies. At first, I was using 'AWS::IAM::Policy' which creates
 > inline policies which is not what I wanted (especially since they don't have their own
-> ARNs). After some doign some googling and reading further in the AWS docs, I realized that
+> ARNs). After some doing some googling and reading further in the AWS docs, I realized that
 > I needed to use 'AWS::IAM::ManagedPolicy' instead to create the right type of policy. Once
 > I did that, things worked as expected. The cli that I used:
 
@@ -260,7 +260,7 @@ resolve it yourself.
 > successfully delete since there are dependencies on their resources. In order
 > to successfully delete them, you must do the deletion in reverse order, starting
 > with the most recently created and then deleting in reverse chronological order.
-> 
+>
 > When doing anything with the aws cli, it is always best to use commands to verify
 > that your command successfully executed. In this case, I would use the
 > 'aws cloudformation describe-events --stack-name \<stack>' with the expectation

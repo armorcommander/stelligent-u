@@ -84,7 +84,6 @@ def updateStackOutputFile(stackOutputFile: str, stackObject: object) -> None:
     try:
         opFile=open(stackOutputFile, "a+")
         if os.stat(stackOutputFile).st_size == 0:
-            print(f'updateStackOutputFile: 0 size, initial write')
             json.dump(stackObject, opFile)
         else:
             opFile.seek(0)
@@ -120,25 +119,25 @@ def upsertStack(stack_action: str, userAwsProfile: str, region: str, fullStackNa
     try:
         if stack_action == 'create':
             stack_id = cf_client.create_stack(
-                StackName=f'{fullStackName}',
-                TemplateBody=(stackTemplate),
+                StackName=fullStackName,
+                TemplateBody=stackTemplate,
                 DisableRollback=True,
                 TimeoutInMinutes=3,
                 Capabilities=['CAPABILITY_NAMED_IAM']
             )
             create_waiter.wait(
-                StackName=f'{stack_id}'
+                StackName=f'{stack_id["StackId"]}'
             )
         else:
             stack_id = cf_client.update_stack(
-                StackName=f'{fullStackName}',
-                TemplateBody=(stackTemplate),
+                StackName=fullStackName,
+                TemplateBody=stackTemplate,
                 DisableRollback=True,
                 TimeoutInMinutes=3,
                 Capabilities=['CAPABILITY_NAMED_IAM']
             )
             update_waiter.wait(
-                StackName=f'{stack_id}'
+                StackName=f'{stack_id["StackId"]}'
             )
         # print success message
         print(f'  {clr.LIGHTGREEN}Success!!\n{clr.RESET}{stack_action}d Stack Id: {clr.LIGHTGREY}{stack_id["StackId"]}{clr.RESET}\n')
@@ -178,10 +177,10 @@ def deleteStack(userAwsProfile: str, region: str, stackId: str) -> Union[bool,No
     print(f'Attempting to delete S3 bucket in region: {clr.LIGHTBLUE}{region}{clr.RESET} ...', end='')
     try:
         cf_client.delete_stack(
-            StackName=f'{stackId}'
+            StackName=stackId
         )
         waiter.wait(
-            StackName=f'{stackId}'
+            StackName=stackId
         )
         print(f'  {clr.LIGHTGREEN}Success!!\n{clr.RESET}Deleted Stack Id: {clr.LIGHTGREY}{region_stack_id}{clr.RESET}\n')
         return True
@@ -204,7 +203,7 @@ user_aws_profile = args.user_aws_profile
 rawDT = datetime.datetime.now()
 fmtDateTime = rawDT.strftime("%Y")+"-"+rawDT.strftime("%m")+"-"+rawDT.strftime("%d")+"_"+rawDT.strftime("%H")+"_"+rawDT.strftime("%M")+"_"+rawDT.strftime("%S")
 log_file=f'{pathlib.PurePath(os.path.basename(__file__)).stem}-{fmtDateTime}.txt'
-stack_ouput_file=f's3-buckets-{fmtDateTime}.json'
+stack_output_file=f's3-buckets-{fmtDateTime}.json'
 
 # for debugging, verbose output of cli arguments and initial variables
 if args.verbose:
@@ -218,7 +217,7 @@ if args.verbose:
     print(f'\n{clr.WHITE}Output files and variables{clr.RESET}\n{clr.DIV_SINGLE_MEDIUM}{clr.RESET}')
     print(f'{clr.PINK}fmtDateTime: {clr.LIGHTCYAN}{fmtDateTime}{clr.RESET}')
     print(f'{clr.PINK}log_file: {clr.LIGHTCYAN}{log_file}{clr.RESET}')
-    print(f'{clr.PINK}stack_ouput_file: {clr.LIGHTCYAN}{stack_ouput_file}{clr.RESET}')
+    print(f'{clr.PINK}stack_output_file: {clr.LIGHTCYAN}{stack_output_file}{clr.RESET}')
 
 all_regions = yaml.safe_load(raw_regions_file)
 country_regions = all_regions[(country)]
@@ -254,5 +253,5 @@ for region in country_regions:
         region_stack_id = stack_ids[(region)]
         response = deleteStack(user_aws_profile, region, region_stack_id)
     else:
-        response = upsertStack(s3_stack_action, user_aws_profile, region, full_stack_name, stack_template, stack_ouput_file)
-        print(f'{full_stack_name}\'s StackId= {response["StackId"]}\n')
+        response = upsertStack(s3_stack_action, user_aws_profile, region, full_stack_name, stack_template, stack_output_file)
+        # print(f'{full_stack_name}\'s StackId= {response["StackId"]}\n')

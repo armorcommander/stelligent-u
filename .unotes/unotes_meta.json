@@ -59,7 +59,9 @@
       "name": "08-cloudwatch-logs",
       "isOrdered": true,
       "folders": {},
-      "files": {}
+      "files": {
+        "README": 0
+      }
     },
     "09-lambda": {
       "name": "09-lambda",
@@ -71,19 +73,25 @@
       "name": "10-kms",
       "isOrdered": true,
       "folders": {},
-      "files": {}
+      "files": {
+        "README": 0
+      }
     },
     "11-parameter-store": {
       "name": "11-parameter-store",
       "isOrdered": true,
       "folders": {},
-      "files": {}
+      "files": {
+        "README": 0
+      }
     },
     "12-codepipeline": {
       "name": "12-codepipeline",
       "isOrdered": true,
       "folders": {},
-      "files": {}
+      "files": {
+        "README": 0
+      }
     },
     "13-ECS": {
       "name": "13-ECS",
@@ -107,13 +115,17 @@
       "name": "16-SAM",
       "isOrdered": true,
       "folders": {},
-      "files": {}
+      "files": {
+        "README": 0
+      }
     },
     "17-Terraform": {
       "name": "17-Terraform",
       "isOrdered": true,
       "folders": {},
-      "files": {}
+      "files": {
+        "README": 0
+      }
     },
     "18-step-functions": {
       "name": "18-step-functions",
