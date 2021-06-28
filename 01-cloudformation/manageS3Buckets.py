@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import argparse
-from logging import exception
 import boto3, botocore.exceptions
 import datetime
 import cfnyaml, json, yaml
