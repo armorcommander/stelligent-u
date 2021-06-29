@@ -29,7 +29,9 @@
       "name": "03-iam",
       "isOrdered": true,
       "folders": {},
-      "files": {}
+      "files": {
+        "README": 0
+      }
     },
     "04-vpcs": {
       "name": "04-vpcs",
