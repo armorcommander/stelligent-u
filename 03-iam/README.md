@@ -80,10 +80,16 @@ to query the IAM service twice:
     * List all the Roles
     * Describe the specific Role your Stack created.
 
-> CF Template File: lab311-inline.yaml
+> CF Template File: lab311b-inline.yaml
 > 
 > Execution command:
 > `aws --region us-east-1 cloudformation create-stack --stack-name jh-iam-stack --template-body file://lab311-inline.yaml --capabilities CAPABILITY_NAMED_IAM`
+> 
+> List Commands:
+> 
+> 
+> * `aws iam list-roles`
+> * `aws iam get-role --role-name JhIAMReadOnlyRole`
 
 #### Lab 3.1.2: Customer Managed Policy
 
@@ -95,6 +101,11 @@ inline policy more generally usable:
 resource.
 * Attach the new resource to the IAM Role.
 * Update the Stack using the modified template.
+
+> CF Template File: lab312-customer-managed-policy.yaml
+> 
+> Execution Command:
+> `aws --region us-east-1 cloudformation update-stack --stack-name jh-iam-stack --template-body file://lab312-customer-managed-policy.yaml --capabilities CAPABILITY_NAMED_IAM`
 
 #### Lab 3.1.3: Customer Managed Policy Re-Use
 
@@ -112,6 +123,11 @@ indicate the re-use of the policy.
     * If the stack update was not successful,
     [troubleshoot and determine why](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html#update-replacement).
 
+> CF Template File: lab313-cus-managed-policy-reuse.yaml
+> 
+> Execution command:
+> `aws --region us-east-1 cloudformation update-stack --stack-name jh-iam-stack --template-body file://lab313-cus-managed-policy-reuse.yaml --capabilities CAPABILITY_NAMED_IAM`
+
 #### Lab 3.1.4: AWS-Managed Policies
 
 Replace the customer managed policy with
@@ -123,6 +139,11 @@ the IAM service.
 * To the second role, add an additional AWS managed policy to grant
 Read permissions to the EC2 service.
 * Update the stack.
+
+> CF Template File: lab314-aws-managed-policies.yaml
+> 
+> Execution command:
+> `aws --region us-east-1 cloudformation update-stack --stack-name jh-iam-stack --template-body file://lab314-aws-managed-policies.yaml --capabilities CAPABILITY_NAMED_IAM`
 
 #### Lab 3.1.5: Policy Simulator
 
@@ -155,6 +176,8 @@ could you have done to your CFN template to make that unnecessary?
 
 Institute that change from the Question above. Recreate the stack as per
 Lab 3.1.5, and demonstrate how to retrieve the ARNs.
+
+> Add an Outputs section to the template outputting that info
 
 ## Lesson 3.2: Trust Relationships & Assuming Roles
 
@@ -196,6 +219,14 @@ the error you receive, diagnose the issue and fix it.
 file, use [aws sts assume-role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html#using-temp-creds-sdk-cli).
 It's a valuable mechanism you'll use often through the API, and it's good to
 know how to do it from the CLI as well.
+<br>
+> CF Template File: lab321-trust-policy.yaml.yaml
+> 
+> Execution command:
+> `aws --region us-east-1 cloudformation create-stack --stack-name jh-iam-stack --template-body file://lab321-trust-policy.yaml --capabilities CAPABILITY_NAMED_IAM`
+> 
+> Assume Role command:
+> `aws sts assume-role --role-arn arn:aws:iam::324320755747:role/JhReadOnlyRole --role-session-name jh-readonlyaccess-role`
 
 #### Lab 3.2.2: Explore the assumed role
 
@@ -208,6 +239,7 @@ in the us-east-1 region.
     * If it succeeded, troubleshoot how Read access allowed the role
     to create a bucket.
 
+<br>
 #### Lab 3.2.3: Add privileges to the role
 
 Update the CFN template to give this role the ability to upload to S3

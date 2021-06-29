@@ -1,0 +1,23 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: 'Template used during IAM module for John Hunter with Stelligent U training. Exploring Trust Policies, create a Role with ReadOnlyAccess that only my user can assume'
+Resources:
+  ReadOnlyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: JhReadOnlyRole
+      Description: JHs IAM role with ReadOnlyAccess
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: 'arn:aws:iam::324320755747:user/john.hunter.labs'
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/ReadOnlyAccess
+Outputs:
+  ReadOnlyRoleARN:
+    Description: 'ARN of JH role with ReadOnlyAccess'
+    Value: !GetAtt ReadOnlyRole.Arn

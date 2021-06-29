@@ -1,0 +1,42 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: 'Template used during IAM module for John Hunter with Stelligent U training. Replace custom read-only policies with corresponding aws policies and add read permissions to second role for EC2 service'
+Resources:
+  IAMReadOnlyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: JhIAMReadOnlyRole
+      Description: An IAM role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: 'arn:aws:iam::324320755747:user/john.hunter.labs'
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/IAMReadOnlyAccess
+  AnotherIAMReadOnlyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: JhGeneralIAMReadOnlyRole
+      Description: An IAM role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: 'arn:aws:iam::324320755747:user/john.hunter.labs'
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/IAMReadOnlyAccess
+        - arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess
+Outputs:
+  IAMReadOnlyRoleARN:
+    Description: 'ARN of IAM role with IAM read-only permissions'
+    Value: !GetAtt IAMReadOnlyRole.Arn
+  AnotherIAMReadOnlyRoleARN:
+    Description: 'ARN of IAM role with IAM and EC2 read-only permissions'
+    Value: !GetAtt AnotherIAMReadOnlyRole.Arn
