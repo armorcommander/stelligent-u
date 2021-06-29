@@ -1,6 +1,7 @@
 ---
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Template used during IAM module for John Hunter with Stelligent U training. Create IAM role with customer managed policy providing IAM read only access
+Description: Template used during IAM module for John Hunter with Stelligent U training. Create IAM role with inline policy providing IAM read only access
+
 Resources:
   IAMReadOnlyRole:
     Type: AWS::IAM::Role
@@ -15,9 +16,9 @@ Resources:
             Action:
               - 'sts:AssumeRole'
   IAMReadOnlyPolicy:
-    Type: AWS::IAM::ManagedPolicy
+    Type: AWS::IAM::Policy
     Properties:
-      ManagedPolicyName: JhIAMReadOnlyManagedPolicy
+      PolicyName: JhIAMReadOnlyPolicy
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -28,3 +29,4 @@ Resources:
             Resource: "*"
       Roles:
         - !Ref IAMReadOnlyRole
+

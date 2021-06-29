@@ -17,7 +17,7 @@ Resources:
             Action:
               - 'sts:AssumeRole'
 
-  IAMReadOnlyPolicy:
+  RoleReadOnlyInlinePolicy:
     Type: AWS::IAM::Policy
     Properties:
       PolicyName: JhIAMReadOnlyPolicy
