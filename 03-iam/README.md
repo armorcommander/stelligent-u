@@ -82,7 +82,7 @@ to query the IAM service twice:
 
 > CF Template File: lab311b-inline.yaml
 > 
-> Execution command:
+> CFN Stack Execution command:
 > `aws --region us-east-1 cloudformation create-stack --stack-name jh-iam-stack --template-body file://lab311-inline.yaml --capabilities CAPABILITY_NAMED_IAM`
 > 
 > List Commands:
@@ -104,7 +104,7 @@ resource.
 
 > CF Template File: lab312-customer-managed-policy.yaml
 > 
-> Execution Command:
+> CFN Stack Execution Command:
 > `aws --region us-east-1 cloudformation update-stack --stack-name jh-iam-stack --template-body file://lab312-customer-managed-policy.yaml --capabilities CAPABILITY_NAMED_IAM`
 
 #### Lab 3.1.3: Customer Managed Policy Re-Use
@@ -125,7 +125,7 @@ indicate the re-use of the policy.
 
 > CF Template File: lab313-cus-managed-policy-reuse.yaml
 > 
-> Execution command:
+> CFN Stack Execution command:
 > `aws --region us-east-1 cloudformation update-stack --stack-name jh-iam-stack --template-body file://lab313-cus-managed-policy-reuse.yaml --capabilities CAPABILITY_NAMED_IAM`
 
 #### Lab 3.1.4: AWS-Managed Policies
@@ -142,7 +142,7 @@ Read permissions to the EC2 service.
 
 > CF Template File: lab314-aws-managed-policies.yaml
 > 
-> Execution command:
+> CFN Stack Execution command:
 > `aws --region us-east-1 cloudformation update-stack --stack-name jh-iam-stack --template-body file://lab314-aws-managed-policies.yaml --capabilities CAPABILITY_NAMED_IAM`
 
 #### Lab 3.1.5: Policy Simulator
@@ -222,7 +222,7 @@ know how to do it from the CLI as well.
 <br>
 > CF Template File: lab321-trust-policy.yaml.yaml
 > 
-> Execution command:
+> CFN Stack Execution command:
 > `aws --region us-east-1 cloudformation create-stack --stack-name jh-iam-stack --template-body file://lab321-trust-policy.yaml --capabilities CAPABILITY_NAMED_IAM`
 > 
 > Assume Role command:
@@ -239,7 +239,21 @@ in the us-east-1 region.
     * If it succeeded, troubleshoot how Read access allowed the role
     to create a bucket.
 
-<br>
+> To make this easier, I set up a profile in my .aws/config file that
+> uses the role I created.
+> The profile I added, below, referenced my user credentials that
+> have the temporary access via my MFA token
+> \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+> [profile jh\_readonlyaccess]
+> role\_arn = arn:aws:iam::324320755747:role/JhReadOnlyRole
+> source\_profile = st\_mfa\_creds
+> 
+> List S3 buckets command (succeeded):
+> `aws --region us-east-1 s3 ls --profile jh_readonlyaccess`
+> 
+> Create S3 bucket command (failed as expected with AccessDenied):
+> `aws --region us-east-1 s3api create-bucket --acl private --bucket jh-s3-bucket --profile jh_readonlyaccess`
+
 #### Lab 3.2.3: Add privileges to the role
 
 Update the CFN template to give this role the ability to upload to S3
@@ -253,6 +267,15 @@ role with S3 full access
 * If it failed, troubleshoot the error iteratively until the role is
 able to upload a file to the bucket.
 
+> CF Template File: lab323-adding-privileges.yaml
+> 
+> CFN Stack Execution command:
+> `aws --region us-east-1 cloudformation update-stack --stack-name jh-iam-stack --template-body file://lab323-adding-privileges.yaml --capabilities CAPABILITY_NAMED_IAM`
+> 
+> Command to upload an image (which succeeded):
+> `aws --region us-east-1 s3 cp tmpConversionFile s3://jh-s3-policy-test-bucket/my-testfile.txt --profile jh_readonlyaccess`
+
+<br>
 #### Lab 3.2.4: Clean up
 
 Clean up. Take the actions necessary to delete the stack.
@@ -323,6 +346,16 @@ read-only access to the other.
 *Were there any errors? If so, take note of them.*
 
 *What were the results you expected, based on the role's policy?*
+
+> I again created a profile called 'jh\_s3fullaccess' and used the sts assume-role command with it.
+> 
+> CF Template File: lab332-unrestricted-service-access.yaml
+> 
+> CFN Stack Execution command:
+> `aws --region us-east-1 cloudformation create-stack --stack-name jh-iam-stack --template-body file://lab332-unrestricted-service-access.yaml --capabilities CAPABILITY_NAMED_IAM`
+> 
+> Command to upload an image (which succeeded):
+> `aws --region us-east-1 s3 cp tmpConversionFile s3://jh-s3-bucket-1/my-testfile.txt --profile jh_s3fullaccess`
 
 #### Lab 3.3.3: Conditional restrictions
 

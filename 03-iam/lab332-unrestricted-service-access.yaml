@@ -1,0 +1,45 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: 'Template used during IAM module for John Hunter with Stelligent U training. Exploring service access, first with unrestricted access'
+Resources:
+  S3FullAccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: JhS3AccessRole
+      Description: JHs IAM role with S3 Access
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: 'arn:aws:iam::324320755747:user/john.hunter.labs'
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+  s3Bucket1:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      BucketName: jh-s3-bucket-1
+      Tags:
+        - Key: Owner
+          Value: JHunter
+  s3Bucket2:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      BucketName: jh-s3-bucket-2
+      Tags:
+        - Key: Owner
+          Value: JHunter
+Outputs:
+  S3FullAccessRole:
+    Description: 'ARN of JH role with S3 Full Access'
+    Value: !GetAtt S3FullAccessRole.Arn
+  S3Bucket1:
+    Description: 'Name of s3 bucket 1'
+    Value: !Ref s3Bucket1
+  S3Bucket2:
+    Description: 'Name of s3 bucket 2'
+    Value: !Ref s3Bucket2
