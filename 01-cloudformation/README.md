@@ -146,8 +146,8 @@ deleted to ensure their removal.
 *What else can you do to prevent resources in a stack from being deleted?*
 <br>
 > There are four approaches to prevent a stack from being deleted.
->
->
+> 
+> 
 > 1. You can set the DeletionPolicy attributed on ALL of the resources within the stack.
 > 2. You can modify the IAM permissions so that the the user does not have the ability to delete a stack.
 > 3. The stack has an overall policy that can be set to prevent deletion
@@ -260,7 +260,7 @@ resolve it yourself.
 > successfully delete since there are dependencies on their resources. In order
 > to successfully delete them, you must do the deletion in reverse order, starting
 > with the most recently created and then deleting in reverse chronological order.
->
+> 
 > When doing anything with the aws cli, it is always best to use commands to verify
 > that your command successfully executed. In this case, I would use the
 > 'aws cloudformation describe-events --stack-name \<stack>' with the expectation
@@ -369,6 +369,11 @@ functionality. Query S3 to ensure that the buckets have been deleted.
 
 * Commit your changes to your latest branch.
 
+> Python script: manageS3Buckets.py
+> 
+> Completed all of the functionality required by lab 1.3.1 to 1.3.3 in
+> a the python file.
+
 ### Retrospective 1.3
 
 #### Question: Portability
@@ -385,6 +390,10 @@ finding existing stacks from the methods that create or update those stacks?
 
 If not, refactor your Python, Ruby or NodeJS scripts to work in the
 manner described.
+<br>
+> I created functions that can be reused by other scripts. There are
+> separate functions to create/update a cloudformation stack, delete
+> a stack and separate error functions.  They can all be reused.
 
 ## Additional Reading
 
