@@ -172,12 +172,16 @@ stack's two roles in order to pass those values to the CLI function. You
 probably used the AWS web console to get the ARN for each role. What
 could you have done to your CFN template to make that unnecessary?
 
+> Add an Outputs section to the template outputting that info
+
 #### Task: Stack Outputs
 
 Institute that change from the Question above. Recreate the stack as per
 Lab 3.1.5, and demonstrate how to retrieve the ARNs.
+CF Template File: lab31-retro.yaml
 
-> Add an Outputs section to the template outputting that info
+> CFN Stack Execution command:
+> `aws --region us-east-1 cloudformation update-stack --stack-name jh-iam-stack --template-body file://lab31-retro.yaml --capabilities CAPABILITY_NAMED_IAM`
 
 ## Lesson 3.2: Trust Relationships & Assuming Roles
 
@@ -275,7 +279,6 @@ able to upload a file to the bucket.
 > Command to upload an image (which succeeded):
 > `aws --region us-east-1 s3 cp tmpConversionFile s3://jh-s3-policy-test-bucket/my-testfile.txt --profile jh_readonlyaccess`
 
-<br>
 #### Lab 3.2.4: Clean up
 
 Clean up. Take the actions necessary to delete the stack.
@@ -374,13 +377,20 @@ prefix.
     policy or the list command syntax until you are able to
     list a file.
 
+> CF Template File: lab333-restricted-service-access.yaml
+> 
+> CFN Stack Execution command:
+> `aws --region us-east-1 cloudformation update-stack --stack-name jh-iam-stack --template-body file://lab333-restricted-service-access.yaml --capabilities CAPABILITY_NAMED_IAM`
+> 
+> The updated stack provided the correct permissions for the role to upload files to the s3 bucket, but only read and list files from the /lebrowski directory
+
 ### Retrospective
+> **In the interest of time, I'm going to move on to other Stelligent U modules and come back at a later date to complete the retrospective**
 
 #### Question: Positive and Negative Tests
 
 *Were the tests you ran for resource- and condition-specific*
-restrictions exhaustive? Did you consider additional [\[positive and/or negative](https://smartbear.com/learn/automated-testing/negative-testing/)
-tests]
+restrictions exhaustive? Did you consider additional [positive and/or negative tests](https://smartbear.com/learn/automated-testing/negative-testing/)
 that could be automated in order to confirm the permissions for the
 Role?
 

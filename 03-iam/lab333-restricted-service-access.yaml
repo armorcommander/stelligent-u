@@ -15,8 +15,32 @@ Resources:
               AWS: 'arn:aws:iam::324320755747:user/john.hunter.labs'
             Action:
               - 'sts:AssumeRole'
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      Policies:
+        - PolicyName: S3ReadyOnlyLebowski
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: Statement1AllowUnrestrictedWrite
+                Effect: Allow
+                Action:
+                  - s3:Put*
+                Resource:
+                  - !Join ['', ['arn:aws:s3:::', !Ref s3Bucket1, '/*']]
+                  - !Join ['', ['arn:aws:s3:::', !Ref s3Bucket2, '/*']]
+              - Sid: Statement2AllowRestrictedRead
+                Effect: Allow
+                Action:
+                  - s3:Get*
+                  - s3:List*
+                Resource:
+                  - !Join ['', ['arn:aws:s3:::', !Ref s3Bucket1]]
+                  - !Join ['', ['arn:aws:s3:::', !Ref s3Bucket1, '/*']]
+                  - !Join ['', ['arn:aws:s3:::', !Ref s3Bucket2]]
+                  - !Join ['', ['arn:aws:s3:::', !Ref s3Bucket2, '/*']]
+                Condition:
+                  StringLike:
+                    s3:prefix:
+                      - 'lebowski/'
   s3Bucket1:
     Type: AWS::S3::Bucket
     Properties:
