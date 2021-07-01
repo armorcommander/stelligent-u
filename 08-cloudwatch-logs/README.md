@@ -23,7 +23,7 @@
 
 ## Conventions
 
-* DO review CloudFormation documentation to see if a property is
+* **DO** review CloudFormation documentation to see if a property is
 required when creating a resource.
 
 ## Lesson 8.1: CloudWatch Logs storage and retrieval
@@ -53,23 +53,25 @@ log group and log stream:
 When you're done, list the log groups and the log streams to confirm
 they exist.
 
+> Execution commands:
+> \- Create log group
+> `aws --region us-east-1 logs create-log-group --log-group-name john.hunter.c9logs`
+> \- Create log stream
+> `aws --region us-east-1 logs create-log-stream --log-group-name john.hunter.c9logs --log-stream-name c9.training`
+> \- List log group
+> `aws --region us-east-1 logs describe-log-groups --log-group-name-prefix john.hunter.c9logs`
+> \- List log stream \(the parameter `--log-stream-name-prefix` is optional and I got the same result with or without it)
+> `aws --region us-east-1 logs describe-log-streams --log-group-name john.hunter.c9logs --log-stream-name-prefix c9.training`
+
 #### Lab 8.1.2: The CloudWatch agent
 
 The CloudWatch agent is the standard tool for sending log data to
 CloudWatch Logs. We've provided a stack template for you in your *clone*
-of the
-[stelligent-u](https://github.com/stelligent/stelligent-u)
-repo:
+of the [stelligent-u](https://github.com/stelligent/stelligent-u) repo:
 
-* [Documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Agent-on-first-instance.html)
-for installing the Cloud Watch agent. This is handled in the template, but
+* [Documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Agent-on-first-instance.html) for installing the Cloud Watch agent. This is handled in the template, but
 in case it is needed for reference
-* We need to generate a template file to be used when running.
-[Documentation on generating the template file](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/create-cloudwatch-agent-configuration-file.html)
-The template file is quite complex, so the use of the wizard is recommended, and
-then editing the template file. In order to run the wizard, we need to have a
-running instance. Recommend launching the stack, running the wizard and then copying
-the generated file to S3 to be referenced in the template.
+* We need to generate a template file to be used when running. [Documentation on generating the template file.](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/create-cloudwatch-agent-configuration-file.html) The template file is quite complex, so the use of the wizard is recommended, and then editing the template file. In order to run the wizard, we need to have a running instance. Recommend launching the stack, running the wizard and then copying the generated file to S3 to be referenced in the template.
 * Recommend not using `collectd` as it can cause the agent to fail to start
 * Modify the template mappings to reference your own VPC ID's and Subnet ID in your
 account that you will launch resources into
