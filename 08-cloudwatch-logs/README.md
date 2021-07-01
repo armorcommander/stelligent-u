@@ -89,6 +89,12 @@ the CloudFormation Init
 
 > *Note:* logs may take several minutes to appear.
 
+<br>
+> Step 1. Creating the base stack template (modified VpcId, SubnetId and AmiId. Added Output section)
+> `aws --region us-east-1 cloudformation create-stack --stack-name jh-cloudwatch-stack --template-body file://lab812-custom.yml --capabilities CAPABILITY_IAM`
+> 
+> Step 2.
+
 #### Lab 8.1.3: 3rd party tool awslogs
 
 [awslogs](https://github.com/jorgebastida/awslogs) is a

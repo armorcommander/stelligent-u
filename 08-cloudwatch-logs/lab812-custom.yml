@@ -59,7 +59,7 @@ Resources:
     CreationPolicy:
       ResourceSignal:
         Count: 1
-        Timeout: PT5M
+        Timeout: PT10M
     Metadata:
       AWS::CloudFormation::Init:
         config:
@@ -96,15 +96,10 @@ Resources:
     Properties:
       GroupDescription: Topic 5 - EC2 Lab
       VpcId: !FindInMap [ RegionMap, !Ref "AWS::Region", vpcId ]
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 0
-          ToPort: 65535
-          CidrIp: 0.0.0.0/0
-Outputs:
-  LaunchTemplateName:
-    Description: 'LanchTemplate name created by base cloudwatch template'
-    Value: !Ref LaunchTemplate
-  EC2Name:
-    Description: 'EC2 name created by base cloudwatch template'
-    Value: !Ref EC2
+# Outputs:
+#   LaunchTemplateName:
+#     Description: 'LanchTemplate name created by base cloudwatch template'
+#     Value: !Ref LaunchTemplate
+#   EC2Name:
+#     Description: 'EC2 name created by base cloudwatch template'
+#     Value: !Ref EC2
