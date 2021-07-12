@@ -1,0 +1,3 @@
+{ "Version": "2012-10-17", "Statement": [{ "Effect": "Allow", "Principal": { "AWS": "arn:aws:iam::324320755747:user/john.hunter.labs" }, "Action": [ "sts:AssumeRole" ]}]}
+
+{ "Version": "2012-10-17", "Statement": [{ "Effect": "Allow", "Action": [ "iam:GenerateCredentialReport", "iam:GenerateServiceLastAccessedDetails", "iam:Get*", "iam:List*", "iam:SimulateCustomPolicy", "iam:SimulatePrincipalPolicy" ], "Resource": "*"}]}
