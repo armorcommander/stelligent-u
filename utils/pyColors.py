@@ -1,12 +1,12 @@
 class MoreStyle:
     '''
     Summary: Reset all colors with MoreStyle.reset; two
-    sub classes Fg for foreground and Bg for background; 
-    use as MoreStyle.subclass.colorname. # i.e. MoreStyle.Fg.RED or 
-    MoreStyle.bg.GREEN also, the generic BOLD, DISABLE, # UNDERLINE, 
-    REVERSE, STRIKETHROUGH, # and INVISIBLE work with the main 
+    sub classes Fg for foreground and Bg for background;
+    use as MoreStyle.subclass.colorname. # i.e. MoreStyle.Fg.RED or
+    MoreStyle.bg.GREEN also, the generic BOLD, DISABLE, # UNDERLINE,
+    REVERSE, STRIKETHROUGH, # and INVISIBLE work with the main
     class i.e. MoreStyle.BOLD
-    ''' 
+    '''
     RESET='\033[0m'
     BOLD='\033[01m'
     DISABLE='\033[02m'
@@ -63,6 +63,7 @@ class MinStyle():
     WHITE = '\033[97m'
     UNDERLINE = '\033[4m'
     RESET = '\033[0m'
-    DIV_DOUBLE='================================================================================================'
-    DIV_SINGLE_LONG='------------------------------------------------------------------------------------------------'
-    DIV_SINGLE_SHORT='--------------------------------------'
+    DIV_DOUBLE = '==================================================================================================='
+    DIV_SINGLE_LONG = '---------------------------------------------------------------------------------------------------'
+    DIV_SINGLE_MEDIUM='------------------------------------------------------------------'
+    DIV_SINGLE_SHORT ='---------------------------------'

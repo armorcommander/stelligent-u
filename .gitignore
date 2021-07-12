@@ -4,6 +4,9 @@
 *.pyc
 __pycache__
 .pytest_cache
+__init__
+
+.editorconfig
 
 .vscode
 .vscode/*
