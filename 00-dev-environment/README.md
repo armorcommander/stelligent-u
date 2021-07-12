@@ -113,11 +113,27 @@ authorized to in the labs account. These tokens will last approximately
 
 What method did you use to store the aws credentials?  What are some other
 options?
+> I created a script that would retrieve the credentials given the MFA token
+> and then modify a specific profile in the .aws/credentials file that was
+> specifically created for temporary credentials. The script would get the
+> temporary session token values and then write them out to the credentials
+> file.
+>
+> I actually created two scripts that would do the same thing, one in bash
+> and one in python.
+>
+> The method that I did assumed that the specific profile existed and that it
+> was the default. Another method would be to create the temporary session
+> credentials and then set that as the current default, but if an individual
+> was doing this from a terminal, opening a new terminal would not necessarily
+> mean that it had the correct credentials.
+> Even another method is to use the AWS Vault.
 
 ###### Question 0.1.1: 2
 
 Which AWS environment variable cannot be set in order to run the
 `aws sts get-session-token` command?
+> AWS_PROFILE
 
 ##### Option 2: Using AWS Vault to automatically handle your temporary tokens
 

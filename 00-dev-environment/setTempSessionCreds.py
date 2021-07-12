@@ -22,7 +22,8 @@ import argparse, boto3, botocore.exceptions, configparser, os, sys
 
 # appending the path so that packages can be imported from a parent level
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-from  utils.pyColors import MinStyle
+from utils.pyColors import MinStyle  # isort:skip
+
 
 # create the commandline parser
 my_parser = argparse.ArgumentParser(prog='setTempSessionCreds',
@@ -155,7 +156,6 @@ access_key_id = session_token_response.get("Credentials").get("AccessKeyId")
 secret_access_key = session_token_response.get(
     "Credentials").get("SecretAccessKey")
 session_token = session_token_response.get("Credentials").get("SessionToken")
-
 
 # get and display the profile that is about to be modified
 config.read(f'{aws_profile_to_mod}')

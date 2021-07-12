@@ -1,0 +1,17 @@
+---
+usa:
+  - us-west-1
+  - us-west-2
+  - us-east-1
+  - us-east-2
+
+eu:
+  - eu-west-1
+  - eu-west-2
+  - eu-east-1
+  - eu-east-2
+  # key commands
+  # yq eval ".$tmpRegion | length" regions-config.yaml
+  # tmpUsa=$(yq eval ".$tmpRegion[]" regions-config.yaml)
+  # yq eval "with_entries(select(.key | . == \"$tmpRegion\")) | .[][]" regions-config.yaml
+  # IFS=',' read -r -a regions <<< $(yq eval "with_entries(select(.key | . == \"$creationCountry\")) | .[][]" $configFile | tr -s '\n' ',' )

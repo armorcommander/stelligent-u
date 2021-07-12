@@ -1,0 +1,169 @@
+{
+  "name": "",
+  "isOrdered": true,
+  "folders": {
+    "00-dev-environment": {
+      "name": "00-dev-environment",
+      "isOrdered": true,
+      "folders": {},
+      "files": {
+        "README": 0
+      }
+    },
+    "01-cloudformation": {
+      "name": "01-cloudformation",
+      "isOrdered": true,
+      "folders": {},
+      "files": {
+        "README": 0,
+        "README Original": 1
+      }
+    },
+    "02-s3": {
+      "name": "02-s3",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "03-iam": {
+      "name": "03-iam",
+      "isOrdered": true,
+      "folders": {},
+      "files": {
+        "README": 0
+      }
+    },
+    "04-vpcs": {
+      "name": "04-vpcs",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "05-ec2": {
+      "name": "05-ec2",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "06-auto-scaling": {
+      "name": "06-auto-scaling",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "07-load-balancing": {
+      "name": "07-load-balancing",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "08-cloudwatch-logs": {
+      "name": "08-cloudwatch-logs",
+      "isOrdered": true,
+      "folders": {},
+      "files": {
+        "README": 0
+      }
+    },
+    "09-lambda": {
+      "name": "09-lambda",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "10-kms": {
+      "name": "10-kms",
+      "isOrdered": true,
+      "folders": {},
+      "files": {
+        "README": 0
+      }
+    },
+    "11-parameter-store": {
+      "name": "11-parameter-store",
+      "isOrdered": true,
+      "folders": {},
+      "files": {
+        "README": 0
+      }
+    },
+    "12-codepipeline": {
+      "name": "12-codepipeline",
+      "isOrdered": true,
+      "folders": {},
+      "files": {
+        "README": 0
+      }
+    },
+    "13-ECS": {
+      "name": "13-ECS",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "14-Jenkins": {
+      "name": "14-Jenkins",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "15-Kubernetes": {
+      "name": "15-Kubernetes",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "16-SAM": {
+      "name": "16-SAM",
+      "isOrdered": true,
+      "folders": {},
+      "files": {
+        "README": 0
+      }
+    },
+    "17-Terraform": {
+      "name": "17-Terraform",
+      "isOrdered": true,
+      "folders": {},
+      "files": {
+        "README": 0
+      }
+    },
+    "18-step-functions": {
+      "name": "18-step-functions",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "images": {
+      "name": "images",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "templates": {
+      "name": "templates",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "unotes": {
+      "name": "unotes",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "utils": {
+      "name": "utils",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    }
+  },
+  "files": {
+    "README": 0,
+    "aws cli commands": 1,
+    "MVE": 2,
+    "WORKFLOW": 3
+  }
+}

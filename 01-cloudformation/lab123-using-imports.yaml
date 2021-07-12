@@ -1,0 +1,21 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Create a new IAM user and apply an imported Managed Policy
+
+Parameters:
+  JhUserName:
+    Type: String
+
+Resources:
+  JhUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: !Join ["-", [!Ref AWS::Region, !Ref JhUserName]]
+      ManagedPolicyArns:
+        - !ImportValue "JhS3ReadOnlyManagedPolicy-arn"
+
+Outputs:
+  JhNewUserName:
+    Description: The newly created user name
+    Value: !Ref JhUser

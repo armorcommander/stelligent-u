@@ -1,0 +1,6 @@
+{
+    "us-west-1": "arn:aws:cloudformation:us-west-1:324320755747:stack/jhs3stack-us-west-1/e17b4950-d52d-11eb-b29d-060ddc7748ed",
+    "us-west-2": "arn:aws:cloudformation:us-west-2:324320755747:stack/jhs3stack-us-west-2/80ffd1b0-d549-11eb-b5f8-0a249fd9441b",
+    "us-east-1": "arn:aws:cloudformation:us-east-1:324320755747:stack/jhs3stack-us-east-1/81639c90-d549-11eb-bcb5-12a7f5de922f",
+    "us-east-2": "arn:aws:cloudformation:us-east-2:324320755747:stack/jhs3stack-us-east-2/81c6cb30-d549-11eb-9037-069dec3dec38"
+}

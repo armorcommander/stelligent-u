@@ -1,0 +1,23 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: My S3 stack with bucketname
+
+Parameters:
+  jhS3BucketName:
+    Type: String
+
+Conditions:
+  IsPreferredRegion: !Equals
+    - !Ref AWS::Region
+    - us-west-2
+Resources:
+  s3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName:
+        !If [
+          IsPreferredRegion,
+          !Join ["-", [!Ref AWS::AccountId, !Ref jhS3BucketName]],
+          !Join ["-", [!Ref AWS::Region, !Ref jhS3BucketName]],
+        ]
