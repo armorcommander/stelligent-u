@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Lambda inline HelloWorld function
+Description: Lambda inline HelloWorld function with modified return body
 Resources:
   JhHelloWorld:
     Type: AWS::Lambda::Function
@@ -11,10 +11,16 @@ Resources:
       Code:
         ZipFile: |
             exports.handler = async (event) => {
-              // TODO implement
+              console.log(`${JSON.stringify(event)}`);
+              let eventBody = '';
+              if (event == null || event == undefined ) {
+                eventBody = {'message': 'Event body was empty'};
+              } else {
+                eventBody = event;
+              }
               const response = {
                   statusCode: 200,
-                  body: JSON.stringify('Hello AWS!'),
+                  body: JSON.stringify(eventBody),
               };
               return response;
             }
@@ -49,7 +55,8 @@ Resources:
     Properties:
       FunctionName: !GetAtt JhHelloWorld.Arn
       Action: lambda:InvokeFunction
-      Principal: '324320755747'
+      Principal: 'apigateway.amazonaws.com'
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${JhRestApi}/*/*/'
   JhRestApi:
     Type: AWS::ApiGateway::RestApi
     Properties:
@@ -64,7 +71,11 @@ Resources:
       Integration:
         Type: AWS
         IntegrationHttpMethod: POST
+        IntegrationResponses:
+          - StatusCode: '200'
         Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${JhHelloWorld.Arn}/invocations'
+      MethodResponses:
+        - StatusCode: '200'
   MyApiDeployment:
     DependsOn: MyApiMethod
     Type: AWS::ApiGateway::Deployment

@@ -78,6 +78,9 @@ that it will call the lambda function. You will need to implement:
     * Appropriate Lambda invoke permissions (`AWS::Lambda::Permission`)
 * Use the AWS CLI to call the API gateway which will call your Lambda
 function.
+
+> So, how do you call the API gateway via the cli? Docs say you can't do that.
+
 * Lambdas can take a payload like JSON as input. Rewrite the function
 to take a JSON payload and simply return the payload, or an item
 from the payload.
