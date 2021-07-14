@@ -69,7 +69,9 @@
       "name": "09-lambda",
       "isOrdered": true,
       "folders": {},
-      "files": {}
+      "files": {
+        "README": 0
+      }
     },
     "10-kms": {
       "name": "10-kms",
@@ -156,7 +158,14 @@
     "utils": {
       "name": "utils",
       "isOrdered": true,
-      "folders": {},
+      "folders": {
+        "__pycache__": {
+          "name": "__pycache__",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        }
+      },
       "files": {}
     }
   },
