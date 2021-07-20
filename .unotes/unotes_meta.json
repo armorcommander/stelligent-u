@@ -37,7 +37,9 @@
       "name": "04-vpcs",
       "isOrdered": true,
       "folders": {},
-      "files": {}
+      "files": {
+        "README": 0
+      }
     },
     "05-ec2": {
       "name": "05-ec2",
