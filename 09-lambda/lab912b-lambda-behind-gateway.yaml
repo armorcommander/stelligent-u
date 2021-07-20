@@ -1,0 +1,107 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Lambda inline JhTestEventBody function that returns either the contents of the event object or a message stating it was empty
+Resources:
+  JhTestEventBody:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: JhTestEventBody
+      Runtime: nodejs12.x
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Handler: index.handler
+      Code:
+        ZipFile: |
+            exports.handler = async (event) => {
+              console.log(`${JSON.stringify(event)}`);
+              let eventBody = {};
+              if (Object.keys(event).length) {
+                eventBody = event;
+                // console.log(`eventBody has contents`);
+                // console.log(`eventBody: ${JSON.stringify(eventBody)}`)
+              } else {
+                eventBody = {"message":"Event body was empty"};
+                // console.log(`eventBody is Empty`);
+                // console.log(`eventBody: ${JSON.stringify(eventBody)}`)
+              }
+              const response = {
+                  statusCode: 200,
+                  body: JSON.stringify(eventBody),
+              };
+              return response;
+            }
+      Description: Hello-world function.
+      Tags:
+        - Key: 'Owner'
+          Value: 'JohnHunter'
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LambdaExecutionRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+            - 'sts:AssumeRole'
+      Policies:
+      - PolicyName: root
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*'
+          - Effect: Allow
+            Action:
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource:
+            - !Join ['', ['arn:aws:logs:', !Ref AWS::Region, ':', !Ref AWS::AccountId, ':/aws/lambda/*:*']]
+  JhHelloWorldPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt JhTestEventBody.Arn
+      Action: lambda:InvokeFunction
+      Principal: 'apigateway.amazonaws.com'
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${JhRestApi}/*/*/'
+  JhRestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: JhRestApi
+      Description: A rest api created via cloudformation for testing AccessAnalyzer functionality
+      Tags:
+        - Key: 'Owner'
+          Value: 'JohnHunter'
+  MyApiMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: ANY
+      RestApiId: !Ref JhRestApi
+      ResourceId: !GetAtt JhRestApi.RootResourceId
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS
+        IntegrationHttpMethod: POST
+        IntegrationResponses:
+          - StatusCode: '200'
+        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${JhTestEventBody.Arn}/invocations'
+      MethodResponses:
+        - StatusCode: '200'
+  MyApiDeployment:
+    DependsOn: MyApiMethod
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId: !Ref JhRestApi
+      Description: JH deployment
+      StageName: JhDummyStage
+Outputs:
+  JhHelloWorldArn:
+    Value: !GetAtt JhTestEventBody.Arn
+  JhRestApiId:
+    Value: !Ref JhRestApi
+  JhRestApiRootResourceId:
+    Value: !GetAtt JhRestApi.RootResourceId
+
